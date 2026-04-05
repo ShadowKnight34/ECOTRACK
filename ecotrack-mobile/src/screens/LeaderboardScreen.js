@@ -2,6 +2,8 @@ import React from 'react';
 import {
     StyleSheet, Text, View, FlatList, Dimensions,
 } from 'react-native';
+import Card from '../components/ui/Card';
+import Badge from '../components/ui/Badge';
 
 const { width } = Dimensions.get('window');
 
@@ -22,7 +24,7 @@ const LEADERBOARD = [
 // ── Medal colors for top 3 ──
 const MEDAL = {
     1: { bg: '#FBBF24', text: '#78350F', emoji: '🥇', ring: '#F59E0B' },
-    2: { bg: '#9CA3AF', text: '#1F2937', emoji: '🥈', ring: '#6B7280' },
+    2: { bg: '#9CA3AF', text: '#111827', emoji: '🥈', ring: '#6B7280' },
     3: { bg: '#D97706', text: '#451A03', emoji: '🥉', ring: '#B45309' },
 };
 
@@ -30,7 +32,7 @@ function TopThreePodium() {
     const top3 = LEADERBOARD.slice(0, 3);
     // Display order: 2nd, 1st, 3rd
     const ordered = [top3[1], top3[0], top3[2]];
-    const heights = [110, 140, 90];
+    const heights = [100, 140, 80];
 
     return (
         <View style={styles.podiumContainer}>
@@ -39,7 +41,7 @@ function TopThreePodium() {
                 return (
                     <View key={user.rank} style={styles.podiumSlot}>
                         {/* Avatar */}
-                        <View style={[styles.podiumAvatar, { borderColor: medal.ring }]}>
+                        <View style={[styles.podiumAvatar, { borderColor: medal.ring, backgroundColor: medal.ring + '40' }]}>
                             <Text style={styles.podiumEmoji}>{medal.emoji}</Text>
                         </View>
                         <Text style={styles.podiumUsername} numberOfLines={1}>
@@ -69,12 +71,12 @@ function LeaderRow({ item }) {
     const medal = MEDAL[item.rank];
 
     return (
-        <View style={[styles.row, isTopThree && styles.rowHighlight]}>
+        <Card style={[styles.row, isTopThree && { borderColor: medal.ring, borderBottomColor: medal.ring, backgroundColor: medal.bg + '10' }]}>
             {/* Rank */}
             <View
                 style={[
                     styles.rankBadge,
-                    isTopThree && { backgroundColor: medal.bg },
+                    isTopThree && { backgroundColor: medal.bg, borderColor: medal.ring },
                 ]}
             >
                 <Text
@@ -94,10 +96,10 @@ function LeaderRow({ item }) {
             </View>
 
             {/* XP */}
-            <Text style={[styles.rowXP, isTopThree && { color: '#FBBF24' }]}>
+            <Badge variant="secondary" style={isTopThree && { backgroundColor: medal.bg }} textStyle={isTopThree && { color: medal.text }}>
                 {item.xp.toLocaleString()} XP
-            </Text>
-        </View>
+            </Badge>
+        </Card>
     );
 }
 
@@ -110,7 +112,7 @@ export default function LeaderboardScreen() {
                 ListHeaderComponent={
                     <View>
                         <View style={styles.header}>
-                            <Text style={styles.heading}>🏆 Leaderboard</Text>
+                            <Text style={styles.heading}>Leaderboard</Text>
                             <Text style={styles.subtitle}>Top learners this season</Text>
                         </View>
                         <TopThreePodium />
@@ -128,7 +130,7 @@ export default function LeaderboardScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#0B3D2E',
+        backgroundColor: '#F3F4F6',
     },
     listContent: {
         padding: 20,
@@ -139,13 +141,14 @@ const styles = StyleSheet.create({
     },
     heading: {
         fontSize: 28,
-        fontWeight: '800',
-        color: '#A7F3D0',
+        fontWeight: '900',
+        color: '#111827',
         marginBottom: 4,
     },
     subtitle: {
-        fontSize: 14,
-        color: '#6EE7B7',
+        fontSize: 15,
+        color: '#4B5563',
+        fontWeight: '500',
     },
 
     // ── Podium ──
@@ -159,96 +162,88 @@ const styles = StyleSheet.create({
     podiumSlot: {
         alignItems: 'center',
         flex: 1,
-        marginHorizontal: 6,
+        marginHorizontal: 4,
     },
     podiumAvatar: {
-        width: 52,
-        height: 52,
-        borderRadius: 26,
-        borderWidth: 3,
-        backgroundColor: '#134E3A',
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        borderWidth: 4,
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 6,
+        marginBottom: 8,
     },
     podiumEmoji: {
-        fontSize: 24,
+        fontSize: 26,
     },
     podiumUsername: {
-        fontSize: 12,
-        fontWeight: '700',
-        color: '#E5E7EB',
-        marginBottom: 2,
+        fontSize: 13,
+        fontWeight: '800',
+        color: '#111827',
+        marginBottom: 4,
     },
     podiumXP: {
-        fontSize: 11,
-        color: '#6EE7B7',
-        fontWeight: '600',
-        marginBottom: 6,
+        fontSize: 12,
+        color: '#6B7280',
+        fontWeight: '700',
+        marginBottom: 8,
     },
     podiumBar: {
         width: '100%',
-        borderTopLeftRadius: 12,
-        borderTopRightRadius: 12,
+        borderTopLeftRadius: 16,
+        borderTopRightRadius: 16,
         alignItems: 'center',
         justifyContent: 'center',
+        borderWidth: 2,
+        borderBottomWidth: 0,
+        borderColor: 'rgba(0,0,0,0.1)',
     },
     podiumRank: {
-        fontSize: 28,
+        fontSize: 32,
         fontWeight: '900',
     },
 
     // ── List ──
     allRanksTitle: {
-        fontSize: 18,
-        fontWeight: '800',
-        color: '#A7F3D0',
-        marginBottom: 12,
+        fontSize: 20,
+        fontWeight: '900',
+        color: '#111827',
+        marginBottom: 16,
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#134E3A',
-        borderRadius: 14,
-        padding: 14,
-        marginBottom: 10,
-        borderWidth: 1,
-        borderColor: '#1F6E50',
-    },
-    rowHighlight: {
-        borderColor: '#FBBF24',
-        borderWidth: 1.5,
+        marginBottom: 12,
+        padding: 16,
     },
     rankBadge: {
-        width: 34,
-        height: 34,
-        borderRadius: 17,
-        backgroundColor: '#0B3D2E',
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        backgroundColor: '#E5E7EB',
         alignItems: 'center',
         justifyContent: 'center',
-        marginRight: 14,
+        marginRight: 16,
+        borderWidth: 2,
+        borderColor: '#D1D5DB',
     },
     rankText: {
         fontSize: 15,
-        fontWeight: '800',
-        color: '#6EE7B7',
+        fontWeight: '900',
+        color: '#6B7280',
     },
     userInfo: {
         flex: 1,
     },
     rowUsername: {
         fontSize: 16,
-        fontWeight: '700',
-        color: '#E5E7EB',
+        fontWeight: '800',
+        color: '#111827',
     },
     rowLevel: {
-        fontSize: 12,
-        color: '#9CA3AF',
+        fontSize: 13,
+        color: '#6B7280',
         marginTop: 2,
-    },
-    rowXP: {
-        fontSize: 16,
-        fontWeight: '800',
-        color: '#34D399',
+        fontWeight: '600',
     },
 });

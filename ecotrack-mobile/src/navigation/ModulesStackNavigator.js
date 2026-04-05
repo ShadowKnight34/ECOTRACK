@@ -9,9 +9,10 @@ export default function ModulesStackNavigator() {
     return (
         <Stack.Navigator
             screenOptions={{
-                headerStyle: { backgroundColor: '#FFFFFF' },
-                headerTintColor: '#111827',
-                headerTitleStyle: { fontWeight: 'bold' },
+                headerStyle: { backgroundColor: '#10B981' }, // Emerald primary
+                headerTintColor: '#FFFFFF',
+                headerTitleStyle: { fontWeight: '900', fontSize: 20 },
+                headerShadowVisible: false,
             }}
         >
             <Stack.Screen

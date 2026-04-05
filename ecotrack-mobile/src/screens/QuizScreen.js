@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import {
     StyleSheet, Text, View, TouchableOpacity,
-    SafeAreaView, Animated, Alert,
+    SafeAreaView, Alert,
 } from 'react-native';
+import Card from '../components/ui/Card';
+import Badge from '../components/ui/Badge';
+import Button from '../components/ui/Button';
+import ProgressBar from '../components/ui/ProgressBar';
 
 // ── Dummy quiz data (will be replaced by API call) ──
 const QUIZ_DATA = [
@@ -102,15 +106,15 @@ export default function QuizScreen({ route, navigation }) {
             </View>
 
             {/* Progress bar */}
-            <View style={styles.progressTrack}>
-                <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
-            </View>
+            <ProgressBar progress={progress} color="#10B981" height={10} style={{ marginBottom: 28 }} />
 
             {/* Question card */}
-            <View style={styles.questionCard}>
-                <Text style={styles.questionNumber}>Q{currentIndex + 1}</Text>
+            <Card style={styles.questionCard}>
+                <Badge variant="outline" style={{ marginBottom: 12 }}>
+                    Q{currentIndex + 1}
+                </Badge>
                 <Text style={styles.questionText}>{question.questionText}</Text>
-            </View>
+            </Card>
 
             {/* Options */}
             <View style={styles.optionsContainer}>
@@ -140,18 +144,15 @@ export default function QuizScreen({ route, navigation }) {
             </View>
 
             {/* Action button */}
-            <TouchableOpacity
-                style={[
-                    styles.actionButton,
-                    !selectedOption && styles.actionButtonDisabled,
-                ]}
-                activeOpacity={0.85}
-                onPress={handleNext}
-            >
-                <Text style={styles.actionText}>
+            <View style={{ marginBottom: 20 }}>
+                <Button
+                    variant={selectedOption ? 'default' : 'outline'}
+                    onPress={handleNext}
+                    disabled={!selectedOption}
+                >
                     {isLastQuestion ? '🚀 Submit Quiz' : 'Next Question →'}
-                </Text>
-            </TouchableOpacity>
+                </Button>
+            </View>
         </SafeAreaView>
     );
 }
@@ -159,7 +160,7 @@ export default function QuizScreen({ route, navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#0B3D2E',
+        backgroundColor: '#F3F4F6',
         paddingHorizontal: 20,
         paddingTop: 16,
     },
@@ -167,51 +168,29 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 12,
+        marginBottom: 16,
     },
     moduleTitle: {
-        fontSize: 16,
-        fontWeight: '700',
-        color: '#A7F3D0',
+        fontSize: 18,
+        fontWeight: '900',
+        color: '#111827',
         flex: 1,
     },
     questionCount: {
-        fontSize: 13,
-        color: '#6EE7B7',
-        fontWeight: '600',
-    },
-    progressTrack: {
-        height: 6,
-        backgroundColor: '#134E3A',
-        borderRadius: 3,
-        marginBottom: 28,
-        overflow: 'hidden',
-    },
-    progressFill: {
-        height: '100%',
-        backgroundColor: '#10B981',
-        borderRadius: 3,
+        fontSize: 14,
+        color: '#6B7280',
+        fontWeight: '700',
     },
     questionCard: {
-        backgroundColor: '#134E3A',
-        borderRadius: 18,
         padding: 24,
         marginBottom: 28,
-        borderWidth: 1,
-        borderColor: '#1F6E50',
-    },
-    questionNumber: {
-        fontSize: 13,
-        fontWeight: '800',
-        color: '#10B981',
-        marginBottom: 10,
-        letterSpacing: 1,
+        backgroundColor: '#FFFFFF',
     },
     questionText: {
-        fontSize: 20,
-        fontWeight: '600',
-        color: '#E5E7EB',
-        lineHeight: 28,
+        fontSize: 22,
+        fontWeight: '800',
+        color: '#111827',
+        lineHeight: 30,
     },
     optionsContainer: {
         flex: 1,
@@ -219,60 +198,51 @@ const styles = StyleSheet.create({
     optionButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#134E3A',
-        borderRadius: 14,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 16,
         padding: 16,
         marginBottom: 12,
         borderWidth: 2,
-        borderColor: '#1F6E50',
+        borderColor: '#E5E7EB',
+        borderBottomWidth: 4,
+        borderBottomColor: '#D1D5DB',
     },
     optionSelected: {
-        backgroundColor: '#064E3B',
+        backgroundColor: '#D1FAE5',
         borderColor: '#10B981',
+        borderBottomColor: '#059669',
     },
     optionBadge: {
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        backgroundColor: '#0B3D2E',
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: '#F3F4F6',
         alignItems: 'center',
         justifyContent: 'center',
-        marginRight: 14,
+        marginRight: 16,
+        borderWidth: 2,
+        borderColor: '#E5E7EB',
     },
     optionBadgeSelected: {
         backgroundColor: '#10B981',
+        borderColor: '#059669',
     },
     optionLetter: {
         fontSize: 16,
-        fontWeight: '800',
-        color: '#6EE7B7',
+        fontWeight: '900',
+        color: '#6B7280',
     },
     optionLetterSelected: {
         color: '#FFFFFF',
     },
     optionText: {
         fontSize: 16,
-        color: '#D1D5DB',
+        color: '#4B5563',
+        fontWeight: '600',
         flex: 1,
     },
     optionTextSelected: {
-        color: '#FFFFFF',
-        fontWeight: '600',
-    },
-    actionButton: {
-        backgroundColor: '#10B981',
-        borderRadius: 14,
-        paddingVertical: 18,
-        alignItems: 'center',
-        marginBottom: 24,
-    },
-    actionButtonDisabled: {
-        backgroundColor: '#1F6E50',
-        opacity: 0.6,
-    },
-    actionText: {
-        color: '#FFFFFF',
-        fontSize: 18,
-        fontWeight: '700',
+        color: '#064E3B',
+        fontWeight: '800',
     },
 });

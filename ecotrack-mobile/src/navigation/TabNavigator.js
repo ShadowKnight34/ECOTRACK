@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text } from 'react-native';
+import { Home, BookOpen, Trophy, User } from 'lucide-react-native';
 import HomeScreen from '../screens/HomeScreen';
 import ModulesStackNavigator from './ModulesStackNavigator';
 import LeaderboardScreen from '../screens/LeaderboardScreen';
@@ -13,26 +13,34 @@ export default function TabNavigator() {
         <Tab.Navigator
             initialRouteName="Home"
             screenOptions={({ route }) => ({
-                headerStyle: { backgroundColor: '#FFFFFF' },
-                headerTintColor: '#111827',
-                headerTitleStyle: { fontWeight: 'bold' },
+                headerStyle: {
+                    backgroundColor: '#10B981', // Emerald primary
+                    shadowColor: 'transparent', // remove default shadow
+                    elevation: 0,
+                },
+                headerTintColor: '#FFFFFF',
+                headerTitleStyle: { fontWeight: '900', fontSize: 20, letterSpacing: 0.5 },
                 tabBarStyle: {
                     backgroundColor: '#FFFFFF',
+                    borderTopWidth: 2,
                     borderTopColor: '#E5E7EB',
-                    paddingBottom: 6,
-                    paddingTop: 6,
-                    height: 60,
+                    paddingBottom: 8,
+                    paddingTop: 8,
+                    height: 64,
+                },
+                tabBarLabelStyle: {
+                    fontWeight: '800',
+                    fontSize: 11,
+                    marginTop: 2,
                 },
                 tabBarActiveTintColor: '#10B981',
                 tabBarInactiveTintColor: '#9CA3AF',
-                tabBarIcon: ({ color }) => {
-                    const icons = {
-                        Home: '🏠',
-                        Modules: '📚',
-                        Leaderboard: '🏆',
-                        Profile: '👤',
-                    };
-                    return <Text style={{ fontSize: 22 }}>{icons[route.name]}</Text>;
+                tabBarIcon: ({ color, size }) => {
+                    const iconSize = 24;
+                    if (route.name === 'Home') return <Home color={color} size={iconSize} strokeWidth={2.5} />;
+                    if (route.name === 'Modules') return <BookOpen color={color} size={iconSize} strokeWidth={2.5} />;
+                    if (route.name === 'Leaderboard') return <Trophy color={color} size={iconSize} strokeWidth={2.5} />;
+                    if (route.name === 'Profile') return <User color={color} size={iconSize} strokeWidth={2.5} />;
                 },
             })}
         >

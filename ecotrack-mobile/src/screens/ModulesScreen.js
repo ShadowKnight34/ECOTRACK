@@ -3,6 +3,11 @@ import {
     StyleSheet, Text, View, ScrollView,
     TouchableOpacity, Dimensions,
 } from 'react-native';
+import { BookOpen, Globe, Droplets, Recycle, TreePine, ArrowRight } from 'lucide-react-native';
+import Card from '../components/ui/Card';
+import Badge from '../components/ui/Badge';
+import Button from '../components/ui/Button';
+import ProgressBar from '../components/ui/ProgressBar';
 
 const { width } = Dimensions.get('window');
 
@@ -11,40 +16,40 @@ const MODULES = [
         moduleID: 1,
         title: 'Basics of Quality Education',
         category: 'SDG 4',
-        color: '#10B981',
-        icon: '📖',
+        color: '#10B981', // Emerald
+        icon: BookOpen,
         lessons: 5,
     },
     {
         moduleID: 2,
         title: 'Climate Action & Awareness',
         category: 'Environment',
-        color: '#3B82F6',
-        icon: '🌍',
+        color: '#3B82F6', // Blue
+        icon: Globe,
         lessons: 4,
     },
     {
         moduleID: 3,
         title: 'Clean Water & Sanitation',
         category: 'SDG 6',
-        color: '#06B6D4',
-        icon: '💧',
+        color: '#0EA5E9', // Sky
+        icon: Droplets,
         lessons: 3,
     },
     {
         moduleID: 4,
         title: 'Responsible Consumption',
         category: 'SDG 12',
-        color: '#F59E0B',
-        icon: '♻️',
+        color: '#F59E0B', // Amber
+        icon: Recycle,
         lessons: 4,
     },
     {
         moduleID: 5,
         title: 'Life on Land',
         category: 'SDG 15',
-        color: '#84CC16',
-        icon: '🌳',
+        color: '#84CC16', // Lime
+        icon: TreePine,
         lessons: 3,
     },
 ];
@@ -54,40 +59,33 @@ export default function ModulesScreen({ navigation }) {
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
             {/* Header */}
             <View style={styles.header}>
-                <Text style={styles.heading}>📚 Learning Modules</Text>
+                <Text style={styles.heading}>Learning Modules</Text>
                 <Text style={styles.subtitle}>
                     Explore topics and test your knowledge
                 </Text>
             </View>
 
             {/* Progress overview */}
-            <View style={styles.progressBar}>
-                <View style={styles.progressFill} />
-                <Text style={styles.progressText}>2 / {MODULES.length} completed</Text>
-            </View>
+            <Card style={styles.progressCard}>
+                <View style={styles.progressHeaderRow}>
+                    <Text style={styles.progressTitle}>Course Progress</Text>
+                    <Badge variant="secondary">2 / {MODULES.length}</Badge>
+                </View>
+                <ProgressBar progress={2 / MODULES.length} color="#FBBF24" height={16} />
+            </Card>
 
             {/* Module cards */}
-            {MODULES.map((mod) => (
-                <TouchableOpacity
-                    key={mod.moduleID}
-                    style={styles.card}
-                    activeOpacity={0.85}
-                    onPress={() =>
-                        navigation.navigate('Quiz', {
-                            moduleID: mod.moduleID,
-                            title: mod.title,
-                        })
-                    }
-                >
-                    {/* Color accent bar */}
-                    <View style={[styles.accent, { backgroundColor: mod.color }]} />
-
-                    <View style={styles.cardBody}>
-                        <View style={styles.cardTop}>
-                            <Text style={styles.cardIcon}>{mod.icon}</Text>
-                            <View style={styles.categoryBadge}>
-                                <Text style={styles.categoryText}>{mod.category}</Text>
+            {MODULES.map((mod) => {
+                const IconComponent = mod.icon;
+                return (
+                    <Card key={mod.moduleID} style={styles.card}>
+                        <View style={styles.cardHeader}>
+                            <View style={[styles.iconBox, { backgroundColor: mod.color }]}>
+                                <IconComponent color="#FFF" size={24} />
                             </View>
+                            <Badge style={{ backgroundColor: '#F3F4F6' }} textStyle={{ color: '#4B5563' }}>
+                                {mod.category}
+                            </Badge>
                         </View>
 
                         <Text style={styles.cardTitle}>{mod.title}</Text>
@@ -96,13 +94,25 @@ export default function ModulesScreen({ navigation }) {
                             <Text style={styles.lessonCount}>
                                 {mod.lessons} lessons
                             </Text>
-                            <View style={[styles.enterBtn, { backgroundColor: mod.color }]}>
-                                <Text style={styles.enterText}>Enter →</Text>
-                            </View>
+                            <Button
+                                variant="default"
+                                style={[styles.enterBtn, { backgroundColor: mod.color, borderBottomColor: mod.color, paddingVertical: 10, paddingHorizontal: 16, borderRadius: 12, borderWidth: 0 }]}
+                                onPress={() =>
+                                    navigation.navigate('Quiz', {
+                                        moduleID: mod.moduleID,
+                                        title: mod.title,
+                                    })
+                                }
+                            >
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Text style={styles.enterText}>Enter </Text>
+                                    <ArrowRight size={16} color="#FFF" />
+                                </View>
+                            </Button>
                         </View>
-                    </View>
-                </TouchableOpacity>
-            ))}
+                    </Card>
+                );
+            })}
         </ScrollView>
     );
 }
@@ -110,7 +120,7 @@ export default function ModulesScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#0B3D2E',
+        backgroundColor: '#F3F4F6', // Light background
     },
     content: {
         padding: 20,
@@ -121,79 +131,59 @@ const styles = StyleSheet.create({
     },
     heading: {
         fontSize: 28,
-        fontWeight: 'bold',
-        color: '#A7F3D0',
+        fontWeight: '900',
+        color: '#111827',
         marginBottom: 4,
     },
     subtitle: {
-        fontSize: 14,
-        color: '#6EE7B7',
+        fontSize: 15,
+        color: '#4B5563',
+        fontWeight: '500',
     },
-    progressBar: {
-        height: 26,
-        backgroundColor: '#134E3A',
-        borderRadius: 13,
+    progressCard: {
         marginBottom: 24,
-        justifyContent: 'center',
-        overflow: 'hidden',
+        paddingVertical: 20,
     },
-    progressFill: {
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        bottom: 0,
-        width: '40%',
-        backgroundColor: '#10B981',
-        borderRadius: 13,
+    progressHeaderRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 12,
     },
-    progressText: {
-        color: '#E5E7EB',
-        fontSize: 12,
-        fontWeight: '600',
-        textAlign: 'center',
+    progressTitle: {
+        fontSize: 16,
+        fontWeight: '800',
+        color: '#111827',
     },
     card: {
-        flexDirection: 'row',
-        backgroundColor: '#134E3A',
-        borderRadius: 16,
-        marginBottom: 16,
-        overflow: 'hidden',
-        borderWidth: 1,
-        borderColor: '#1F6E50',
+        marginBottom: 20,
+        padding: 20,
     },
-    accent: {
-        width: 5,
-    },
-    cardBody: {
-        flex: 1,
-        padding: 18,
-    },
-    cardTop: {
+    cardHeader: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: 10,
+        marginBottom: 16,
     },
-    cardIcon: {
-        fontSize: 30,
-    },
-    categoryBadge: {
-        backgroundColor: '#0B3D2E',
-        borderRadius: 20,
-        paddingHorizontal: 12,
-        paddingVertical: 4,
-    },
-    categoryText: {
-        color: '#6EE7B7',
-        fontSize: 11,
-        fontWeight: '700',
-        letterSpacing: 0.5,
+    iconBox: {
+        width: 48,
+        height: 48,
+        borderRadius: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 2,
+        borderColor: 'rgba(0,0,0,0.1)',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 2,
     },
     cardTitle: {
         fontSize: 18,
-        fontWeight: '700',
-        color: '#E5E7EB',
-        marginBottom: 14,
+        fontWeight: '800',
+        color: '#111827',
+        marginBottom: 16,
     },
     cardFooter: {
         flexDirection: 'row',
@@ -201,17 +191,17 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     lessonCount: {
-        fontSize: 13,
-        color: '#9CA3AF',
+        fontSize: 14,
+        color: '#6B7280',
+        fontWeight: '700',
     },
     enterBtn: {
-        borderRadius: 20,
-        paddingHorizontal: 16,
-        paddingVertical: 8,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     enterText: {
         color: '#FFFFFF',
-        fontSize: 13,
-        fontWeight: '700',
+        fontSize: 14,
+        fontWeight: '800',
     },
 });

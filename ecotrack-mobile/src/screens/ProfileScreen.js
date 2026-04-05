@@ -2,6 +2,10 @@ import React from 'react';
 import {
     StyleSheet, Text, View, ScrollView, Dimensions,
 } from 'react-native';
+import { Award, Target, BookOpen } from 'lucide-react-native';
+import Card from '../components/ui/Card';
+import Badge from '../components/ui/Badge';
+import ProgressBar from '../components/ui/ProgressBar';
 
 const { width } = Dimensions.get('window');
 
@@ -24,7 +28,7 @@ const BADGES = [
 ];
 
 export default function ProfileScreen() {
-    const xpProgress = (USER.xp / USER.nextLevelXP) * 100;
+    const xpProgress = USER.xp / USER.nextLevelXP;
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -40,7 +44,7 @@ export default function ProfileScreen() {
             </View>
 
             {/* ── Level & XP Bar ── */}
-            <View style={styles.levelCard}>
+            <Card style={styles.levelCard}>
                 <View style={styles.levelHeader}>
                     <View style={styles.levelBadge}>
                         <Text style={styles.levelBadgeText}>LVL</Text>
@@ -55,37 +59,40 @@ export default function ProfileScreen() {
                 </View>
 
                 {/* XP progress bar */}
-                <View style={styles.xpBarTrack}>
-                    <View style={[styles.xpBarFill, { width: `${xpProgress}%` }]}>
-                        <View style={styles.xpBarShine} />
-                    </View>
-                </View>
+                <ProgressBar progress={xpProgress} color="#FBBF24" height={16} />
                 <Text style={styles.xpRemaining}>
                     {USER.nextLevelXP - USER.xp} XP to Level {USER.level + 1}
                 </Text>
-            </View>
+            </Card>
 
             {/* ── Stats Row ── */}
             <View style={styles.statsRow}>
-                <View style={styles.statCard}>
+                <Card style={styles.statCard}>
+                    <BookOpen color="#10B981" size={24} style={{ marginBottom: 8 }} />
                     <Text style={styles.statValue}>12</Text>
                     <Text style={styles.statLabel}>Quizzes</Text>
-                </View>
-                <View style={styles.statCard}>
+                </Card>
+                <Card style={styles.statCard}>
+                    <Target color="#EF4444" size={24} style={{ marginBottom: 8 }} />
                     <Text style={styles.statValue}>87%</Text>
                     <Text style={styles.statLabel}>Avg Score</Text>
-                </View>
-                <View style={styles.statCard}>
+                </Card>
+                <Card style={styles.statCard}>
+                    <Award color="#FBBF24" size={24} style={{ marginBottom: 8 }} />
                     <Text style={styles.statValue}>{BADGES.filter(b => b.earned).length}</Text>
                     <Text style={styles.statLabel}>Badges</Text>
-                </View>
+                </Card>
             </View>
 
             {/* ── Achievements Grid ── */}
-            <Text style={styles.sectionTitle}>🏅 Achievements</Text>
+            <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Achievements</Text>
+                <Badge variant="secondary"> {BADGES.filter(b => b.earned).length} / {BADGES.length} </Badge>
+            </View>
+
             <View style={styles.badgeGrid}>
                 {BADGES.map((badge) => (
-                    <View
+                    <Card
                         key={badge.id}
                         style={[styles.badgeItem, !badge.earned && styles.badgeLocked]}
                     >
@@ -95,7 +102,7 @@ export default function ProfileScreen() {
                         <Text style={[styles.badgeName, !badge.earned && styles.badgeNameLocked]}>
                             {badge.name}
                         </Text>
-                    </View>
+                    </Card>
                 ))}
             </View>
         </ScrollView>
@@ -105,7 +112,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#0B3D2E',
+        backgroundColor: '#F3F4F6',
     },
     content: {
         paddingHorizontal: 20,
@@ -122,17 +129,18 @@ const styles = StyleSheet.create({
         width: 104,
         height: 104,
         borderRadius: 52,
-        borderWidth: 3,
+        borderWidth: 4,
         borderColor: '#10B981',
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 14,
+        backgroundColor: '#D1FAE5',
     },
     avatar: {
-        width: 90,
-        height: 90,
-        borderRadius: 45,
-        backgroundColor: '#134E3A',
+        width: 88,
+        height: 88,
+        borderRadius: 44,
+        backgroundColor: '#34D399',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -141,23 +149,22 @@ const styles = StyleSheet.create({
     },
     username: {
         fontSize: 24,
-        fontWeight: '800',
-        color: '#A7F3D0',
+        fontWeight: '900',
+        color: '#111827',
     },
     email: {
-        fontSize: 13,
-        color: '#6EE7B7',
+        fontSize: 14,
+        color: '#6B7280',
         marginTop: 2,
+        fontWeight: '500',
     },
 
     // ── Level Card ──
     levelCard: {
-        backgroundColor: '#134E3A',
-        borderRadius: 18,
-        padding: 20,
-        marginBottom: 20,
-        borderWidth: 1,
-        borderColor: '#1F6E50',
+        marginBottom: 24,
+        backgroundColor: '#10B981', // Emerald primary
+        borderColor: '#059669',
+        borderBottomColor: '#047857',
     },
     levelHeader: {
         flexDirection: 'row',
@@ -168,19 +175,21 @@ const styles = StyleSheet.create({
         width: 56,
         height: 56,
         borderRadius: 14,
-        backgroundColor: '#10B981',
+        backgroundColor: '#047857',
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: 16,
+        borderWidth: 2,
+        borderColor: '#059669',
     },
     levelBadgeText: {
-        fontSize: 10,
+        fontSize: 12,
         fontWeight: '800',
-        color: '#064E3B',
+        color: '#A7F3D0',
         letterSpacing: 1,
     },
     levelNumber: {
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: '900',
         color: '#FFFFFF',
         marginTop: -2,
@@ -190,44 +199,26 @@ const styles = StyleSheet.create({
     },
     xpTitle: {
         fontSize: 13,
-        color: '#9CA3AF',
-        fontWeight: '600',
+        color: '#D1FAE5',
+        fontWeight: '700',
+        textTransform: 'uppercase',
+        letterSpacing: 0.5,
     },
     xpNumbers: {
-        fontSize: 22,
-        fontWeight: '800',
-        color: '#E5E7EB',
+        fontSize: 24,
+        fontWeight: '900',
+        color: '#FFFFFF',
         marginTop: 2,
     },
     xpDivider: {
-        fontSize: 15,
-        fontWeight: '500',
-        color: '#6B7280',
-    },
-    xpBarTrack: {
-        height: 12,
-        backgroundColor: '#0B3D2E',
-        borderRadius: 6,
-        overflow: 'hidden',
-    },
-    xpBarFill: {
-        height: '100%',
-        backgroundColor: '#10B981',
-        borderRadius: 6,
-        overflow: 'hidden',
-    },
-    xpBarShine: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: 4,
-        backgroundColor: 'rgba(255,255,255,0.2)',
-        borderRadius: 2,
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#A7F3D0',
     },
     xpRemaining: {
         fontSize: 12,
-        color: '#6EE7B7',
+        fontWeight: '700',
+        color: '#D1FAE5',
         marginTop: 8,
         textAlign: 'right',
     },
@@ -236,36 +227,38 @@ const styles = StyleSheet.create({
     statsRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 28,
+        marginBottom: 32,
     },
     statCard: {
         flex: 1,
-        backgroundColor: '#134E3A',
-        borderRadius: 14,
-        paddingVertical: 18,
         alignItems: 'center',
         marginHorizontal: 4,
-        borderWidth: 1,
-        borderColor: '#1F6E50',
+        paddingVertical: 18,
     },
     statValue: {
         fontSize: 22,
-        fontWeight: '800',
-        color: '#34D399',
+        fontWeight: '900',
+        color: '#111827',
     },
     statLabel: {
-        fontSize: 11,
-        color: '#9CA3AF',
+        fontSize: 12,
+        color: '#6B7280',
         marginTop: 4,
-        fontWeight: '600',
+        fontWeight: '700',
+        textTransform: 'uppercase',
     },
 
     // ── Achievements ──
+    sectionHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 16,
+    },
     sectionTitle: {
         fontSize: 20,
-        fontWeight: '800',
-        color: '#A7F3D0',
-        marginBottom: 16,
+        fontWeight: '900',
+        color: '#111827',
     },
     badgeGrid: {
         flexDirection: 'row',
@@ -274,17 +267,15 @@ const styles = StyleSheet.create({
     },
     badgeItem: {
         width: (width - 56) / 3,
-        backgroundColor: '#134E3A',
-        borderRadius: 14,
-        paddingVertical: 18,
         alignItems: 'center',
+        paddingVertical: 18,
+        paddingHorizontal: 8,
         marginBottom: 12,
-        borderWidth: 1,
-        borderColor: '#1F6E50',
     },
     badgeLocked: {
-        opacity: 0.45,
-        borderColor: '#0B3D2E',
+        opacity: 0.6,
+        backgroundColor: '#F9FAFB',
+        borderBottomColor: '#E5E7EB',
     },
     badgeIcon: {
         fontSize: 32,
@@ -292,15 +283,15 @@ const styles = StyleSheet.create({
     },
     badgeIconLocked: {
         fontSize: 28,
+        opacity: 0.5,
     },
     badgeName: {
         fontSize: 11,
-        fontWeight: '700',
-        color: '#E5E7EB',
+        fontWeight: '800',
+        color: '#4B5563',
         textAlign: 'center',
-        paddingHorizontal: 4,
     },
     badgeNameLocked: {
-        color: '#6B7280',
+        color: '#9CA3AF',
     },
 });
